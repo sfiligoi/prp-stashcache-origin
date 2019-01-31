@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stashcache-origin-flatiron
+  labels: 
+    k8s-app: stashcache-origin
+spec:
+  template:
+    metadata: 
+      labels:
+        k8s-app: stashcache-origin
+    spec:
+      hostNetwork: true
+      nodeSelector: 
+        kubernetes.io/hostname:  gordon-dm1.sdsc.edu
+      containers:
+      - name: stashcache-origin
+        image: sfiligoi/prp-stashcache-origin
+        imagePullPolicy: Always
+        #command: ["sh", "-c", "sleep infinity"]
+        env:
+        - name: EXPORTDATA
+          value: /edex/merra2
+        volumeMounts:
+          - name: config10
+            mountPath: /etc/xrootd/config.d/10-origin-site-local.cfg
+            subPath: 10-origin-site-local.cfg
+            readOnly: true
+          - name: configpubauth
+            mountPath: /etc/xrootd/public-origin-authfile
+            subPath: public-origin-authfile
+            readOnly: true
+          - name: publicsfiligoi
+            mountPath: /stashdata/flatiron/sfiligoi/shared-osg
+            readOnly: true
+      volumes:
+        - name: config10
+          configMap:
+            name: stashcache-origin-config-flatiron
+            items:
+               - key: 10-origin-site-local.cfg
+                 path: 10-origin-site-local.cfg
+        - name: configpubauth
+          configMap:
+            name: stashcache-origin-config-flatiron
+            items:
+               - key: public-origin-authfile
+                 path: public-origin-authfile
+        - name: publicsfiligoi
+          hostPath: 
+            path: /simons/scratch/sfiligoi/shared-osg
+            type: Directory 
+
