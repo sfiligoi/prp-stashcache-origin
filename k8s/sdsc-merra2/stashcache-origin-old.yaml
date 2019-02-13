@@ -1,20 +1,20 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: stashcache-origin-sdsc-merra2
+  name: stashcache-origin-old-sdsc-merra2
   labels: 
-    k8s-app: stashcache-origin
+    k8s-app: stashcache-origin-old
 spec:
   template:
     metadata: 
       labels:
-        k8s-app: stashcache-origin
+        k8s-app: stashcache-origin-old
     spec:
       hostNetwork: true
       nodeSelector: 
         kubernetes.io/hostname: stashcache.t2.ucsd.edu
       containers:
-      - name: stashcache-origin
+      - name: stashcache-origin-old
         image: sfiligoi/prp-stashcache-origin
         imagePullPolicy: Always
         #command: ["sh", "-c", "sleep infinity"]
@@ -36,13 +36,13 @@ spec:
       volumes:
         - name: config10
           configMap:
-            name: stashcache-origin-config-sdsc-merra2
+            name: stashcache-origin-old-config-sdsc-merra2
             items:
-               - key: 10-origin-site-local.cfg
+               - key: 10-origin-site-local.old.cfg
                  path: 10-origin-site-local.cfg
         - name: configpubauth
           configMap:
-            name: stashcache-origin-config-sdsc-merra2
+            name: stashcache-origin-old-config-sdsc-merra2
             items:
                - key: public-origin-authfile
                  path: public-origin-authfile
