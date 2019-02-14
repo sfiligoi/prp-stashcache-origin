@@ -1,0 +1,57 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stashcache-origin-merra2
+  namespace: osg
+  labels: 
+    k8s-app: stashcache-origin-merra2
+spec:
+  template:
+    metadata: 
+      labels:
+        k8s-app: stashcache-origin-merra2
+    spec:
+      containers:
+      - name: stashcache-origin-merra2
+        image: sfiligoi/prp-stashcache-origin
+        imagePullPolicy: Always
+        #command: ["sh", "-c", "sleep infinity"]
+        env:
+        - name: EXPORTDATA
+          value: /edex/merra2
+        volumeMounts:
+          - name: config10
+            mountPath: /etc/xrootd/config.d/10-origin-site-local.cfg
+            subPath: 10-origin-site-local.cfg
+            readOnly: true
+          - name: configpubauth
+            mountPath: /etc/xrootd/public-origin-authfile
+            subPath: public-origin-authfile
+            readOnly: true
+          - name: fs-store
+            mountPath: /edex
+            readOnly: true
+      volumes:
+        - name: config10
+          configMap:
+            name: stashcache-origin-merra2-config
+            items:
+               - key: 10-origin-site-local.cfg
+                 path: 10-origin-site-local.cfg
+        - name: configpubauth
+          configMap:
+            name: stashcache-origin-merra2-config
+            items:
+               - key: public-origin-authfile
+                 path: public-origin-authfile
+        - name: fs-store
+          flexVolume:
+            driver: ceph.rook.io/rook
+            fsType: ceph
+            options:
+              clusterNamespace: rook
+              fsName: nautilusfs
+              path: /edex
+              mountUser: edex
+              mountSecret: ceph-fs-secret          
+
