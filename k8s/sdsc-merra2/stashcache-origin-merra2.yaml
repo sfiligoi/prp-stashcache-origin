@@ -20,9 +20,17 @@ spec:
         - name: EXPORTDATA
           value: /edex/merra2
         volumeMounts:
-          - name: config10
+          - name: config10o
             mountPath: /etc/xrootd/config.d/10-origin-site-local.cfg
             subPath: 10-origin-site-local.cfg
+            readOnly: true
+          - name: config10c
+            mountPath: /etc/xrootd/config.d/10-common-site-local.cfg
+            subPath: 10-common-site-local.cfg
+            readOnly: true
+          - name: config20
+            mountPath: /etc/xrootd/config.d/20-network-setup.cfg
+            subPath: 20-network-setup.cfg
             readOnly: true
           - name: configpubauth
             mountPath: /etc/xrootd/public-origin-authfile
@@ -32,12 +40,24 @@ spec:
             mountPath: /edex
             readOnly: true
       volumes:
-        - name: config10
+        - name: config10o
           configMap:
             name: stashcache-origin-merra2-config
             items:
                - key: 10-origin-site-local.cfg
                  path: 10-origin-site-local.cfg
+        - name: config10c
+          configMap:
+            name: stashcache-origin-merra2-config
+            items:
+               - key: 10-common-site-local.cfg
+                 path: 10-common-site-local.cfg
+        - name: config20
+          configMap:
+            name: stashcache-origin-merra2-config
+            items:
+               - key: 20-network-setup.cfg
+                 path: 20-network-setup.cfg
         - name: configpubauth
           configMap:
             name: stashcache-origin-merra2-config
