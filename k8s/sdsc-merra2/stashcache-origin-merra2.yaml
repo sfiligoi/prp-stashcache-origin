@@ -23,47 +23,57 @@ spec:
           - name: config10o
             mountPath: /etc/xrootd/config.d/10-origin-site-local.cfg
             subPath: 10-origin-site-local.cfg
-            readOnly: true
           - name: config10c
             mountPath: /etc/xrootd/config.d/10-common-site-local.cfg
             subPath: 10-common-site-local.cfg
-            readOnly: true
           - name: config20
             mountPath: /etc/xrootd/config.d/20-network-setup.cfg
             subPath: 20-network-setup.cfg
-            readOnly: true
           - name: configpubauth
             mountPath: /etc/xrootd/public-origin-authfile
             subPath: public-origin-authfile
-            readOnly: true
+          - name: configinit
+            mountPath: /usr/sbin/pod_init.sh
+            subPath: pod_init.sh
           - name: fs-store
             mountPath: /edex
             readOnly: true
       volumes:
         - name: config10o
-          configMap:
-            name: stashcache-origin-merra2-config
+          secret:
+            secretName: stashcache-origin-merra2-config
             items:
                - key: 10-origin-site-local.cfg
                  path: 10-origin-site-local.cfg
+            defaultMode: 292
         - name: config10c
-          configMap:
-            name: stashcache-origin-merra2-config
+          secret:
+            secretName: stashcache-origin-merra2-config
             items:
                - key: 10-common-site-local.cfg
                  path: 10-common-site-local.cfg
+            defaultMode: 292
         - name: config20
-          configMap:
-            name: stashcache-origin-merra2-config
+          secret:
+            secretName: stashcache-origin-merra2-config
             items:
                - key: 20-network-setup.cfg
                  path: 20-network-setup.cfg
+            defaultMode: 292
         - name: configpubauth
-          configMap:
-            name: stashcache-origin-merra2-config
+          secret:
+            secretName: stashcache-origin-merra2-config
             items:
                - key: public-origin-authfile
                  path: public-origin-authfile
+            defaultMode: 292
+        - name: configinit
+          secret:
+            secretName: stashcache-origin-merra2-config
+            items:
+               - key: pod_init.sh
+                 path: pod_init.sh
+            defaultMode: 365
         - name: fs-store
           flexVolume:
             driver: ceph.rook.io/rook
