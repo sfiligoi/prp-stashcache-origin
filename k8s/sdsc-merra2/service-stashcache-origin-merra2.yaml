@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    k8s-app: stashcache-origin-merra2
+  name: stashcache-origin-merra2
+  namespace: osg
+spec:
+  ports:
+  - nodePort: 31094
+    port: 31094
+    protocol: TCP
+    targetPort: 31094
+  selector:
+    k8s-app: stashcache-origin-merra2
+  type: NodePort
