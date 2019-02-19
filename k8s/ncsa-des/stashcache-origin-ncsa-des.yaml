@@ -1,0 +1,62 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: stashcache-origin-ncsa-des
+  namespace: osg
+  labels: 
+    k8s-app: stashcache-origin-ncsa-des
+spec:
+  template:
+    metadata: 
+      labels:
+        k8s-app: stashcache-origin-ncsa-des
+    spec:
+      hostNetwork: true
+      nodeSelector: 
+        kubernetes.io/hostname: desdev1.cosmology.illinois.edu
+      containers:
+      - name: stashcache-origin
+        image: sfiligoi/prp-stashcache-origin
+        imagePullPolicy: Always
+        #command: ["sh", "-c", "sleep infinity"]
+        env:
+        volumeMounts:
+          - name: config10o
+            mountPath: /etc/xrootd/config.d/10-origin-site-local.cfg
+            subPath: 10-origin-site-local.cfg
+            readOnly: true
+          - name: config10c
+            mountPath: /etc/xrootd/config.d/10-common-site-local.cfg
+            subPath: 10-common-site-local.cfg
+            readOnly: true
+          - name: configpubauth
+            mountPath: /etc/xrootd/public-origin-authfile
+            subPath: public-origin-authfile
+            readOnly: true
+          - name: gpfsdata
+            mountPath: /stashdata/desdm
+            readOnly: true
+      volumes:
+        - name: config10o
+          configMap:
+            name: stashcache-origin-config-ncsa-des
+            items:
+               - key: 10-origin-site-local.cfg
+                 path: 10-origin-site-local.cfg
+        - name: config10c
+          configMap:
+            name: stashcache-origin-config-ncsa-des
+            items:
+               - key: 10-common-site-local.cfg
+                 path: 10-common-site-local.cfg
+        - name: configpubauth
+          configMap:
+            name: stashcache-origin-config-ncsa-des
+            items:
+               - key: public-origin-authfile
+                 path: public-origin-authfile
+        - name: gpfsdata
+          hostPath: 
+            path: /des008/cluster_scratch/users/osg
+            type: Directory 
+
