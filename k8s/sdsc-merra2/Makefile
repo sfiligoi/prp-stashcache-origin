@@ -1,14 +1,10 @@
-.PHONY: configmap configmap-old
+.PHONY: configmap 
 
 all: configmap
 
 configmap:
 	-kubectl delete secret stashcache-origin-merra2-config -n osg
 	kubectl create secret generic stashcache-origin-merra2-config -n osg \
-             --from-file=10-origin-site-local.cfg --from-file=10-common-site-local.cfg --from-file=20-network-setup.cfg \
-             --from-file=public-origin-authfile --from-file=pod_init.sh
-
-configmap-old:
-	-kubectl delete configmap stashcache-origin-old-config-sdsc-merra2 -n osg
-	kubectl create configmap stashcache-origin-old-config-sdsc-merra2 -n osg --from-file=10-origin-site-local.old.cfg --from-file=public-origin-authfile
+             --from-file=10-origin-site-local.cfg --from-file=20-network-setup.cfg \
+             --from-file=public-origin-authfile --from-file=xcache_pod_init.sh
 
