@@ -41,33 +41,29 @@ spec:
             readOnly: true
       volumes:
         - name: config10o
-          secret:
-            secretName: stashcache-origin-merra2-config
+          configMap:
+            name: stashcache-origin-merra2-config
             items:
                - key: 10-origin-authfile.cfg
                  path: 10-origin-authfile.cfg
-            defaultMode: 292
         - name: config20
-          secret:
-            secretName: stashcache-origin-merra2-config
+          configMap:
+            name: stashcache-origin-merra2-config
             items:
                - key: 20-network-setup.cfg
                  path: 20-network-setup.cfg
-            defaultMode: 292
         - name: configpubauth
-          secret:
-            secretName: stashcache-origin-merra2-config
+          configMap:
+            name: stashcache-origin-merra2-config
             items:
                - key: public-origin-authfile
                  path: public-origin-authfile
-            defaultMode: 292
         - name: configinit
-          secret:
-            secretName: stashcache-origin-merra2-config
+          configMap:
+            name: stashcache-origin-merra2-config
             items:
                - key: xcache_pod_init.sh
                  path: xcache_pod_init.sh
-            defaultMode: 365
         - name: fs-store
           flexVolume:
             driver: ceph.rook.io/rook
