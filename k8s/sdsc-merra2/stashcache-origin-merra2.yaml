@@ -21,10 +21,12 @@ spec:
           value: /edex
         - name : XC_SITENAME
           value: SDSC-MERRA2-Origin
+        - name: XC_ORIGINEXPORT
+          value: /merra2
         volumeMounts:
           - name: config10o
-            mountPath: /etc/xrootd/config.d/10-origin-site-local.cfg
-            subPath: 10-origin-site-local.cfg
+            mountPath: /etc/xrootd/config.d/10-origin-authfile.cfg
+            subPath: 10-origin-authfile.cfg
           - name: config20
             mountPath: /etc/xrootd/config.d/20-network-setup.cfg
             subPath: 20-network-setup.cfg
@@ -42,8 +44,8 @@ spec:
           secret:
             secretName: stashcache-origin-merra2-config
             items:
-               - key: 10-origin-site-local.cfg
-                 path: 10-origin-site-local.cfg
+               - key: 10-origin-authfile.cfg
+                 path: 10-origin-authfile.cfg
             defaultMode: 292
         - name: config20
           secret:
