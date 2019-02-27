@@ -15,37 +15,48 @@ spec:
         kubernetes.io/hostname:  gordon-dm1.sdsc.edu
       containers:
       - name: stashcache-origin
-        image: sfiligoi/prp-stashcache-origin
+        image: opensciencegrid/stash-origin:development
         imagePullPolicy: Always
         #command: ["sh", "-c", "sleep infinity"]
         env:
-        - name: EXPORTDATA
-          value: /edex/merra2
+        - name : XC_SITENAME
+          value: SDSC-Flatiron-Origin
+        - name: XC_ROOTDIR
+          value: /stashdata
+        - name: XC_ORIGINEXPORT
+          value: /flatiron
         volumeMounts:
-          - name: config10
-            mountPath: /etc/xrootd/config.d/10-origin-site-local.cfg
-            subPath: 10-origin-site-local.cfg
-            readOnly: true
+          - name: config11
+            mountPath: /etc/xrootd/config.d/11-local.cfg
+            subPath: 11-local.cfg
           - name: configpubauth
             mountPath: /etc/xrootd/public-origin-authfile
             subPath: public-origin-authfile
-            readOnly: true
           - name: publicsfiligoi
             mountPath: /stashdata/flatiron/sfiligoi/shared-osg
             readOnly: true
+          - name: configinit
+            mountPath: /usr/local/sbin/xcache_pod_init.sh
+            subPath: xcache_pod_init.sh
       volumes:
-        - name: config10
+        - name: config11
           configMap:
             name: stashcache-origin-config-flatiron
             items:
-               - key: 10-origin-site-local.cfg
-                 path: 10-origin-site-local.cfg
+               - key: 11-local.cfg
+                 path: 11-local.cfg
         - name: configpubauth
           configMap:
             name: stashcache-origin-config-flatiron
             items:
                - key: public-origin-authfile
                  path: public-origin-authfile
+        - name: configinit
+          configMap:
+            name: stashcache-origin-config-flatiron
+            items:
+               - key: xcache_pod_init.sh
+                 path: xcache_pod_init.sh
         - name: publicsfiligoi
           hostPath: 
             path: /simons/scratch/sfiligoi/shared-osg
