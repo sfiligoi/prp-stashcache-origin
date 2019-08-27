@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stashcache-origin-testny
+  namespace: osg
+  labels: 
+    k8s-app: stashcache-origin-testny
+spec:
+  selector:
+    matchLabels:
+      k8s-app: stashcache-origin-testny
+  template:
+    metadata: 
+      labels:
+        k8s-app: stashcache-origin-testny
+    spec:
+      hostNetwork: true
+      nodeSelector: 
+        kubernetes.io/hostname: osg.newy32aoa.nrp.internet2.edu
+      containers:
+      - name: stashcache-origin
+        image: opensciencegrid/stash-origin:fresh
+        imagePullPolicy: Always
+        #command: ["sh", "-c", "sleep infinity"]
+        env:
+        - name: XC_ROOTDIR
+          value: /tmp
+        - name : XC_SITENAME
+          value: SDSC-TESTNY-Origin
+        - name: XC_ORIGINEXPORT
+          value: /testi2ny
+        resources:
+          limits:
+            memory: 26Gi
+            cpu: 16
+          requests:
+            memory: 2Gi
+            cpu: 0.1
+        volumeMounts:
+          - name: config10o
+            mountPath: /etc/xrootd/config.d/10-origin-authfile.cfg
+            subPath: 10-origin-authfile.cfg
+          - name: config20
+            mountPath: /etc/xrootd/config.d/20-network-setup.cfg
+            subPath: 20-network-setup.cfg
+          - name: configpubauth
+            mountPath: /etc/xrootd/public-origin-authfile
+            subPath: public-origin-authfile
+          - name: hostdata
+            mountPath: /hostdata
+          - mountPath: /export/shm
+            name: mem
+      volumes:
+        - name: config10o
+          configMap:
+            name: stashcache-origin-testny-config
+            items:
+               - key: 10-origin-authfile.cfg
+                 path: 10-origin-authfile.cfg
+        - name: config20
+          configMap:
+            name: stashcache-origin-testny-config
+            items:
+               - key: 20-network-setup.cfg
+                 path: 20-network-setup.cfg
+        - name: configpubauth
+          configMap:
+            name: stashcache-origin-testny-config
+            items:
+               - key: public-origin-authfile
+                 path: public-origin-authfile
+        - name: configinit
+          configMap:
+            name: stashcache-origin-testny-config
+            items:
+               - key: 20-image-init.sh
+                 path: 20-image-init.sh
+        - name: hostdata
+          hostPath:
+            path: /export/data
+            type: Directory
+        - name: mem
+          hostPath:
+            path: /dev/shm
+            type: Directory
+
